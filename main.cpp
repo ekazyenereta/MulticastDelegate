@@ -2,7 +2,7 @@
 #include <functional>
 #include "MulticastDelegate.h"
 
-class ClassA : public Object
+struct ClassA : public Object
 {
 public:
 	ClassA() {
@@ -15,7 +15,7 @@ public:
 	MulticastDelegate mdelegate;
 };
 
-class ClassB : public Object
+struct ClassB : public Object
 {
 public:
 	ClassB() {
@@ -33,12 +33,18 @@ int main()
 	void func();
 	ClassA classA;
 
-	classA.mdelegate.AddDynamic(&classA, &ClassA::func);
-	classA.mdelegate.AddDynamic(&classA, &ClassA::func);
-	classA.mdelegate.AddDynamic(&classA, &ClassA::func);
-	classA.mdelegate.AddDynamic(&classA, &ClassA::func);
-	classA.mdelegate.AddDynamic(&classA, &ClassA::func);
-	classA.mdelegate.AddDynamic(&classA, &ClassA::func);
+
+	std::function<void(void*)> members = std::bind(&ClassA::func, classA);
+	std::list< std::function< void(Object*) >> sdelegate;
+	sdelegate.push_back(members);
+
+
+	classA.mdelegate.AddDynamic(&classA, std::bind(&ClassA::func, classA));
+	classA.mdelegate.AddDynamic(&classA, std::bind(&ClassA::func, classA));
+	classA.mdelegate.AddDynamic(&classA, std::bind(&ClassA::func, classA));
+	classA.mdelegate.AddDynamic(&classA, std::bind(&ClassA::func, classA));
+	classA.mdelegate.AddDynamic(&classA, std::bind(&ClassA::func, classA));
+	classA.mdelegate.AddDynamic(&classA, std::bind(&ClassA::func, classA));
 
 	for (auto& mdelegate : classA.mdelegate.m_Delegate)
 	{
