@@ -1,5 +1,4 @@
 #include <iostream>
-#include <functional>
 #include "MulticastDelegate.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(ClassDelegate0);
