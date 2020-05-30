@@ -13,107 +13,69 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_SevenParams(ClassDelegate7, int, int, int, in
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_EightParams(ClassDelegate8, int, int, int, int, int, int, int, int);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_NineParams(ClassDelegate9, int, int, int, int, int, int, int, int, int);
 
-class FuncClass
+class DelegateTest
 {
 public:
-	void func0() {
-		std::cout << "func : " << std::endl;
-	}
-	void func1(int value1) {
-		std::cout << "func : " << value1 << std::endl;
-		nValue += value1;
-	}
-	void func2(int value1, int value2) {
-		std::cout << "func : " << value1 << value2 << std::endl;
-		nValue += value1 + value2;
-	}
-	void func3(int value1, int value2, int value3) {
-		std::cout << "func : " << value1 << value2 << value3 << std::endl;
-		nValue += value1 + value2 + value3;
-	}
-	void func4(int value1, int value2, int value3, int value4) {
-		std::cout << "func : " << value1 << value2 << value3 << value4 << std::endl;
-		nValue += value1 + value2 + value3 + value4;
-	}
-	void func5(int value1, int value2, int value3, int value4, int value5) {
-		std::cout << "func : " << value1 << value2 << value3 << value4 << value5 << std::endl;
-		nValue += value1 + value2 + value3 + value4 + value5;
-	}
-	void func6(int value1, int value2, int value3, int value4, int value5, int value6) {
-		std::cout << "func : " << value1 << value2 << value3 << value4 << value5 << value6 << std::endl;
-		nValue += value1 + value2 + value3 + value4 + value5 + value6;
-	}
-	void func7(int value1, int value2, int value3, int value4, int value5, int value6, int value7) {
-		std::cout << "func : " << value1 << value2 << value3 << value4 << value5 << value6 << value7 << std::endl;
-		nValue += value1 + value2 + value3 + value4 + value5 + value6 + value7;
-	}
-	void func8(int value1, int value2, int value3, int value4, int value5, int value6, int value7, int value8) {
-		std::cout << "func : " << value1 << value2 << value3 << value4 << value5 << value6 << value7 << value8 << std::endl;
-		nValue += value1 + value2 + value3 + value4 + value5 + value6 + value7 + value8;
-	}
-	void func9(int value1, int value2, int value3, int value4, int value5, int value6, int value7, int value8, int value9) {
-		std::cout << "func : " << value1 << value2 << value3 << value4 << value5 << value6 << value7 << value8 << value9 << std::endl;
-		nValue += value1 + value2 + value3 + value4 + value5 + value6 + value7 + value8 + value9;
-	}
-public:
-	int nValue = 0;
+	ClassDelegate0 eveDrawParam;
+	ClassDelegate1 eveSetParam;
+	ClassDelegate1 eveUpdate;
 };
 
-void Func1(const int i);
-void Func1(const int i)
+
+class DataClass
 {
-	std::cout << i << std::endl;
-}
+private:
+	int value = 0;
+
+public:
+	DataClass(DelegateTest* world)
+	{
+		world->eveSetParam.AddDynamic1(&DataClass::SetData, this);
+		world->eveDrawParam.AddDynamic0(&DataClass::Draw, this);
+	}
+	~DataClass() {}
+
+private:
+	void SetData(int value)
+	{
+		this->value = value;
+	}
+	void Draw()
+	{
+		std::cout << "Data : " << value << std::endl;
+	}
+};
+
+class Control
+{
+private:
+	DelegateTest* pWorld = nullptr;
+public:
+	Control(DelegateTest* world)
+	{
+		pWorld = world;
+		world->eveUpdate.AddDynamic1(&Control::Update, this);
+	}
+	~Control() {}
+
+private:
+	void Update(int value)
+	{
+		pWorld->eveSetParam.Broadcast(value);
+		pWorld->eveDrawParam.Broadcast();
+	}
+};
 
 int main()
 {
-	int nValue = 1;
-	FuncClass funcClass;
-	ClassDelegate0 class0;
-	ClassDelegate1 class1;
-	ClassDelegate2 class2;
-	ClassDelegate3 class3;
-	ClassDelegate4 class4;
-	ClassDelegate5 class5;
-	ClassDelegate6 class6;
-	ClassDelegate7 class7;
-	ClassDelegate8 class8;
-	ClassDelegate9 class9;
+	DelegateTest delegateTest;
+	DataClass dataClass(&delegateTest);
+	Control dontrol(&delegateTest);
 
-	class0.AddDynamic0(&FuncClass::func0, &funcClass);
-	class0.Broadcast();
+	delegateTest.eveSetParam.Broadcast(50);
+	delegateTest.eveDrawParam.Broadcast();
 
-	class1.AddDynamic1(&FuncClass::func1, &funcClass);
-	class1.Broadcast(nValue);
-
-	class2.AddDynamic2(&FuncClass::func2, &funcClass);
-	class2.Broadcast(nValue, nValue);
-
-	class3.AddDynamic3(&FuncClass::func3, &funcClass);
-	class3.Broadcast(nValue, nValue, nValue);
-
-	class4.AddDynamic4(&FuncClass::func4, &funcClass);
-	class4.Broadcast(nValue, nValue, nValue, nValue);
-
-	class5.AddDynamic5(&FuncClass::func5, &funcClass);
-	class5.Broadcast(nValue, nValue, nValue, nValue, nValue);
-
-	class6.AddDynamic6(&FuncClass::func6, &funcClass);
-	class6.Broadcast(nValue, nValue, nValue, nValue, nValue, nValue);
-
-	class7.AddDynamic7(&FuncClass::func7, &funcClass);
-	class7.Broadcast(nValue, nValue, nValue, nValue, nValue, nValue, nValue);
-
-	class8.AddDynamic8(&FuncClass::func8, &funcClass);
-	class8.Broadcast(nValue, nValue, nValue, nValue, nValue, nValue, nValue, nValue);
-
-	class9.AddDynamic9(&FuncClass::func9, &funcClass);
-	class9.Broadcast(nValue, nValue, nValue, nValue, nValue, nValue, nValue, nValue, nValue);
-
-	std::cout << "func nValue: " << funcClass.nValue << std::endl;
-
-	class1.__Internal_AddDynamic(&Func1);
-	class1.Broadcast(10);
+	delegateTest.eveUpdate.Broadcast(100);
 
 	std::system("PAUSE");
 }
