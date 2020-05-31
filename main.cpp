@@ -38,7 +38,7 @@ public:
 	{
 		pWorld = world;
 
-		// マクロプロキシの使用例
+		// マクロ関数の使用例
 		world->eveSetParam.AddDynamic1(&DataClass::SetData, this);
 		world->eveDrawParam.AddDynamic0(&DataClass::Draw, this);
 
@@ -72,7 +72,7 @@ public:
 	{
 		pWorld = world;
 
-		// マクロプロキシの使用例
+		// マクロ関数の使用例
 		world->eveUpdate.AddDynamic1(&Control::Update, this);
 
 		// ラムダ式
