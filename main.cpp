@@ -43,8 +43,15 @@ public:
 		world->eveDrawParam.AddDynamic0(&DataClass::Draw, this);
 
 		// ラムダ式
-		world->eveSetParam.AddDynamic([&](int value) { SetData(value); }, this);
-		world->eveDrawParam.AddDynamic([&]() {Draw(); }, this);
+		world->eveSetParam.AddDynamic(
+			[&](int value) {
+				SetData(value);
+			}, this);
+
+		world->eveDrawParam.AddDynamic(
+			[&]() {
+				Draw();
+			}, this);
 	}
 	~DataClass() {
 		// 関数ポインタ破棄の例
@@ -76,7 +83,10 @@ public:
 		world->eveUpdate.AddDynamic1(&Control::Update, this);
 
 		// ラムダ式
-		world->eveUpdate.AddDynamic([&](int value) {Update(value); }, this);
+		world->eveUpdate.AddDynamic(
+			[&](int value) {
+				Update(value);
+			}, this);
 	}
 	~Control() {
 		// 関数ポインタ破棄の例
@@ -94,8 +104,8 @@ private:
 int main()
 {
 	DelegateTest delegateTest;
-	DataClass *dataClass = new DataClass(&delegateTest);
-	Control *dontrol = new Control(&delegateTest);
+	DataClass* dataClass = new DataClass(&delegateTest);
+	Control* dontrol = new Control(&delegateTest);
 
 	delegateTest.eveSetParam.Broadcast(50);
 	delegateTest.eveDrawParam.Broadcast();
