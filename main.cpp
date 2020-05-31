@@ -105,14 +105,14 @@ int main()
 {
 	DelegateTest delegateTest;
 	DataClass* dataClass = new DataClass(&delegateTest);
-	Control* dontrol = new Control(&delegateTest);
+	Control* control = new Control(&delegateTest);
 
 	delegateTest.eveSetParam.Broadcast(50);
 	delegateTest.eveDrawParam.Broadcast();
 	delegateTest.eveUpdate.Broadcast(100);
 
 	delete dataClass;
-	delete dontrol;
+	delete control;
 
 	delegateTest.eveSetParam.Broadcast(150);
 	delegateTest.eveDrawParam.Broadcast();
