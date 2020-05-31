@@ -18,6 +18,13 @@ public:
 	ClassDelegate0 eveDrawParam;
 	ClassDelegate1 eveSetParam;
 	ClassDelegate1 eveUpdate;
+
+	~DelegateTest() {
+		// 関数ポインタ破棄の例
+		eveDrawParam.Delete();
+		eveSetParam.Delete();
+		eveUpdate.Delete();
+	}
 };
 
 
@@ -25,14 +32,25 @@ class DataClass
 {
 private:
 	int value = 0;
-
+	DelegateTest* pWorld = nullptr;
 public:
 	DataClass(DelegateTest* world)
 	{
+		pWorld = world;
+
+		// マクロプロキシの使用例
 		world->eveSetParam.AddDynamic1(&DataClass::SetData, this);
 		world->eveDrawParam.AddDynamic0(&DataClass::Draw, this);
+
+		// ラムダ式
+		world->eveSetParam.AddDynamic([&](int value) { SetData(value); }, this);
+		world->eveDrawParam.AddDynamic([&]() {Draw(); }, this);
 	}
-	~DataClass() {}
+	~DataClass() {
+		// 関数ポインタ破棄の例
+		pWorld->eveSetParam.Delete(this);
+		pWorld->eveDrawParam.Delete(this);
+	}
 
 private:
 	void SetData(int value)
@@ -53,9 +71,17 @@ public:
 	Control(DelegateTest* world)
 	{
 		pWorld = world;
+
+		// マクロプロキシの使用例
 		world->eveUpdate.AddDynamic1(&Control::Update, this);
+
+		// ラムダ式
+		world->eveUpdate.AddDynamic([&](int value) {Update(value); }, this);
 	}
-	~Control() {}
+	~Control() {
+		// 関数ポインタ破棄の例
+		pWorld->eveUpdate.Delete(this);
+	}
 
 private:
 	void Update(int value)
@@ -68,13 +94,19 @@ private:
 int main()
 {
 	DelegateTest delegateTest;
-	DataClass dataClass(&delegateTest);
-	Control dontrol(&delegateTest);
+	DataClass *dataClass = new DataClass(&delegateTest);
+	Control *dontrol = new Control(&delegateTest);
 
 	delegateTest.eveSetParam.Broadcast(50);
 	delegateTest.eveDrawParam.Broadcast();
-
 	delegateTest.eveUpdate.Broadcast(100);
+
+	delete dataClass;
+	delete dontrol;
+
+	delegateTest.eveSetParam.Broadcast(150);
+	delegateTest.eveDrawParam.Broadcast();
+	delegateTest.eveUpdate.Broadcast(200);
 
 	std::system("PAUSE");
 }
